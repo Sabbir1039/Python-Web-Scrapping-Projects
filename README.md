@@ -1,30 +1,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Python Web Scraping Projects</title>
-  <style>
-    ul {
-      list-style-type: none;
-    }
-    ul ul {
-      margin-left: 20px;
-    }
-    ul li:before {
-      content: "│";
-      display: inline-block;
-      margin-right: 5px;
-      transform: scaleX(0.7);
-    }
-    ul li:last-child:before {
-      content: "";
-    }
-    ul li.folder:before {
-      content: "├──";
-    }
-    ul li.file:before {
-      content: "└──";
-    }
-  </style>
 </head>
 <body>
   <h1>Python Web Scraping Projects</h1>
