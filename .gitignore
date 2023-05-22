@@ -1,0 +1,27 @@
+# Python-specific files and directories
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyz
+*.pyw
+*.pyi
+
+# Virtual environment
+venv/
+env/
+*.venv/
+
+# IDE-specific files and directories
+.vscode/
+.idea/
+*.sublime-*
+*.swp
+
+# Logs and temporary files
+*.log
+*.tmp
+
+# Miscellaneous
+.DS_Store
+Thumbs.db
