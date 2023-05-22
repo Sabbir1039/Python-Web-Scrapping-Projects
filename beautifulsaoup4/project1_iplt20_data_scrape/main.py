@@ -34,4 +34,4 @@ for row in rows[1:]:
     df.loc[lenght] = table_row_data
 # print(df.head())
 
-df.to_csv("iplt20_unsold_players_2023.csv")
+df.to_csv("H:/Web Scrapping/beautifulsaoup4/project1_iplt20_data_scrape/iplt20_unsold_players_2023.csv")
