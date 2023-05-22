@@ -1,11 +1,43 @@
-## Web Scrapping Projects
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Python Web Scraping Projects</title>
+  <style>
+    ul {
+      list-style-type: none;
+    }
+    ul ul {
+      margin-left: 20px;
+    }
+    ul li:before {
+      content: "│";
+      display: inline-block;
+      margin-right: 5px;
+      transform: scaleX(0.7);
+    }
+    ul li:last-child:before {
+      content: "";
+    }
+    ul li.folder:before {
+      content: "├──";
+    }
+    ul li.file:before {
+      content: "└──";
+    }
+  </style>
+</head>
+<body>
+  <h1>Python Web Scraping Projects</h1>
+  
+    ### In this repository:
 
-In this repository:
+    - The `Python-Web-Scraping-Projects` directory serves as the root directory.
+    - Inside each library directory (`beautifulsoup4`, `scrapy`, `selenium`), there are separate project directories (`project1`, `project2`, etc.).
+    - Each project directory contains the relevant files such as Python scripts (`main.py`, `spider.py`), a `requirements.txt` file, and a `README.md` file with specific instructions for the project.
 
-- The `Python-Web-Scraping-Projects` directory serves as the root directory.
-- Inside each library directory (`beautifulsoup4`, `scrapy`, `selenium`), there are separate project directories (`project1`, `project2`, etc.).
-- Each project directory contains the relevant files such as Python scripts (`main.py`, `spider.py`), a `requirements.txt` file, and a `README.md` file with specific instructions for the project.
-
+  <h2>File Structure</h2>
+  <pre>
+    <code>
 Python-Web-Scraping-Projects
 │
 ├── beautifulsoup4
@@ -42,3 +74,7 @@ Python-Web-Scraping-Projects
     │   ├── requirements.txt
     │   └── README.md
     └── ...
+    </code>
+  </pre>
+</body>
+</html>
