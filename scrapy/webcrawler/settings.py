@@ -1,3 +1,4 @@
+from datetime import datetime
 # Scrapy settings for webcrawler project
 #
 # For simplicity, this file contains only settings considered important or
@@ -14,10 +15,6 @@ NEWSPIDER_MODULE = "webcrawler.spiders"
 
 ADDONS = {}
 
-ITEM_PIPELINES = {
-    'webcrawler.pipelines.StreamingQuotesPipeline': 300,
-}
-
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = "webcrawler (+http://www.yourdomain.com)"
@@ -26,7 +23,7 @@ ITEM_PIPELINES = {
 ROBOTSTXT_OBEY = True
 
 # Concurrency and throttling settings
-#CONCURRENT_REQUESTS = 16
+CONCURRENT_REQUESTS = 16
 CONCURRENT_REQUESTS_PER_DOMAIN = 1
 DOWNLOAD_DELAY = 1
 USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
@@ -51,9 +48,24 @@ USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTM
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
-#DOWNLOADER_MIDDLEWARES = {
+DOWNLOADER_MIDDLEWARES = {
 #    "webcrawler.middlewares.WebcrawlerDownloaderMiddleware": 543,
-#}
+   'webcrawler.middlewares.RotateUserAgentMiddleware': 400,
+   'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware': None,
+   'rotating_proxies.middlewares.RotatingProxyMiddleware': 610,
+   'rotating_proxies.middlewares.BanDetectionMiddleware': 620,
+   'webcrawler.middlewares.ProxyLoggingMiddleware': 950,
+
+}
+ROTATING_PROXY_LIST_PATH = 'proxies_updated.txt'
+ROTATING_PROXY_BAN_POLICY = 'webcrawler.policy.TimeoutBanPolicy'
+
+DOWNLOAD_TIMEOUT = 30
+RETRY_ENABLED = True
+RETRY_TIMES = 3
+RETRY_HTTP_CODES = [500, 502, 503, 504, 408]  # include 408 Request Timeout
+
+
 
 # Enable or disable extensions
 # See https://docs.scrapy.org/en/latest/topics/extensions.html
@@ -63,9 +75,9 @@ USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTM
 
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
-#ITEM_PIPELINES = {
-#    "webcrawler.pipelines.WebcrawlerPipeline": 300,
-#}
+ITEM_PIPELINES = {
+    'webcrawler.pipelines.StreamingQuotesPipeline': 300,
+}
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html
@@ -90,3 +102,13 @@ USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTM
 
 # Set settings whose default value is deprecated to a future-proof value
 FEED_EXPORT_ENCODING = "utf-8"
+
+# logging settings
+LOG_ENABLED = True
+
+# Show all INFO and above (INFO, WARNING, ERROR, CRITICAL)
+# LOG_LEVEL = 'INFO'
+LOG_LEVEL = 'DEBUG'
+
+# Store logs in a file
+LOG_FILE = f"logs/scrapy_run_{datetime.now().strftime('%Y%m%d_%H%M%S')}.log"

@@ -1,11 +1,20 @@
 import scrapy
 from ..items import QuotesItem
+import logging as log
 
 class QuotesSpider(scrapy.Spider):
     name = "quotes"
-    start_urls = ["https://quotes.toscrape.com/"]
+    # start_urls = ["https://quotes.toscrape.com/"] # also can use below method
+
+    def start_requests(self):
+        urls = [
+            "https://quotes.toscrape.com/"
+        ]
+        for url in urls:
+            yield scrapy.Request(url=url, callback=self.parse)
 
     def parse(self, response):
+        log.info(f"Scraping: {response.url}")
         for quote in response.css("div.quote"):
             item = QuotesItem()
             item["title"] = quote.css("span.text::text").get()
@@ -25,6 +34,7 @@ class QuotesSpider(scrapy.Spider):
             yield response.follow(next_page, callback = self.parse)
 
     def parse_author_details(self, response, item):
+        log.info(f"Scraping author: {item['author']} details")
         item["author_details"] = {
             "born_date": response.css("span.author-born-date::text").get(),
             "born_location": response.css("span.author-born-location::text").get(),

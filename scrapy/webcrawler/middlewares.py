@@ -8,6 +8,17 @@ from scrapy import signals
 # useful for handling different item types with a single interface
 from itemadapter import ItemAdapter
 
+# dynamic user agent
+from fake_useragent import UserAgent
+import random
+
+# for proxy-rotation
+from scrapy.exceptions import NotConfigured
+
+from scrapy.downloadermiddlewares.retry import RetryMiddleware
+from scrapy.utils.response import response_status_message
+import logging
+
 
 class WebcrawlerSpiderMiddleware:
     # Not all methods need to be defined. If a method is not defined,
@@ -98,3 +109,48 @@ class WebcrawlerDownloaderMiddleware:
 
     def spider_opened(self, spider):
         spider.logger.info("Spider opened: %s" % spider.name)
+
+
+# dynamic user agent setup using fake-user-agent
+
+FALLBACK_USER_AGENTS = [
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15",
+    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (iPhone; CPU iPhone OS 16_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.5 Mobile/15E148 Safari/604.1",
+    "Mozilla/5.0 (Linux; Android 13; SM-S901B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Mobile Safari/537.36",
+]
+
+
+class RotateUserAgentMiddleware:
+    def __init__(self):
+        try:
+            self.ua = UserAgent()
+        except:
+            self.ua = None
+
+    def process_request(self, request, spider):
+        try:
+            if self.ua:
+                user_agent = self.ua.random
+            else:
+                user_agent = random.choice(FALLBACK_USER_AGENTS)
+        except Exception:
+            user_agent = random.choice(FALLBACK_USER_AGENTS)
+
+        # Set User-Agent safely
+        if user_agent:
+            request.headers['User-Agent'] = user_agent
+        else:
+            # Optional: Set a default one to avoid None
+            request.headers['User-Agent'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'
+
+        # Debug print (for testing only)
+        print(request.headers.get('User-Agent'))
+
+# for debug purposes
+class ProxyLoggingMiddleware:
+    def process_request(self, request, spider):
+        proxy = request.meta.get('proxy')
+        spider.logger.info(f"🛡️ Using proxy: {proxy} for {request.url}")
+        print(f"Proxy: {proxy}")
